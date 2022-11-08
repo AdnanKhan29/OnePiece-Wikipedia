@@ -1,10 +1,17 @@
 import React from 'react'
 import './App.css'
+import NavBar from './components/NavBar'
+import Home from './components/Home'
+import Enroll from './components/Enroll'
+import {  Routes,Route } from 'react-router';
 function App() {
   return (
-    <div className='App'>
-      <img src={require('./components/storage/header.png')} alt="logo" />
-      <input type="text" placeholder="search ..."></input>
+     <div className="App">
+      <NavBar></NavBar>
+      <Routes>
+         <Route path='Home' element={<Home/>}/>
+         <Route path='Enroll' element={<Enroll/>}/>
+     </Routes>
     </div>
   )
 }
