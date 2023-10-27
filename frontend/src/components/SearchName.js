@@ -8,7 +8,7 @@ import {
   CardHeader,
 } from "@mui/material";
 
-function SearchF() {
+function SearchName() {
   const [fruitlist, setFruitlist] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCardDisplay, setShowCardDisplay] = useState(false);
@@ -26,7 +26,7 @@ function SearchF() {
 
   const handleSearch = () => {
     const filteredFruitList = fruitlist.filter((fruit) =>
-      fruit.devilfruit.toLowerCase().includes(searchTerm.toLowerCase())
+      fruit.user.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     setSearchResults(filteredFruitList);
@@ -39,7 +39,7 @@ function SearchF() {
         <div>
           {searchResults.map((val, index) => (
             <Card key={index} style={{ marginBottom: "16px" }}>
-              <CardHeader title={val.devilfruit} subheader={val.type} />
+              <CardHeader title={val.user} subheader={val.type} />
               <CardContent>
                 <p>Power: {val.power}</p>
                 <p>Ability: {val.ability}</p>
@@ -63,7 +63,7 @@ function SearchF() {
   return (
     <div>
       <TextField
-        label="Search Devil Fruit"
+        label="Search User"
         variant="outlined"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
@@ -83,4 +83,4 @@ function SearchF() {
   );
 }
 
-export default SearchF;
+export default SearchName;
