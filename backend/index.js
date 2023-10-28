@@ -1,58 +1,50 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const mysql = require("mysql2");
-const app = express();
+import express from "express";
+import mysql from "mysql2";
+import cors from "cors";
+import multer from "multer";
+import path from "path";
 
-const db = mysql.createPool({
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/images");
+  },
+  filename: (req, file, cb) => {
+    cb(
+      null,
+      file.fieldname + "_" + Date.now() + path.extname(file.originalname)
+    );
+  },
+});
+
+const upload = multer({
+  storage: storage,
+});
+
+const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "ak@124421",
   database: "OP",
 });
 
-app.use(cors());
-app.use(express.json()); // Use express.json() as a function
-app.use(bodyParser.urlencoded({ extended: true }));
+app.post("/upload", upload.single("image"), (req, res) => {
+  const image = req.file.filename;
+  const sql = "INSERT INTO userdata (image) VALUES (?)";
 
-app.get("/api/get", (req, res) => {
-  const sqlSelect = "SELECT * FROM fruits";
-  db.query(sqlSelect, (err, results) => {
+  db.query(sql, [image], (err, result) => {
     if (err) {
-      console.log(err);
-      res.status(500).send("Error while fetching data");
-    } else {
-      console.log("Data fetched successfully");
-      res.status(200).json(results); // Send the retrieved data as JSON response
+      console.error(err);
+      return res.json({ Status: "Error" });
     }
+
+    return res.json({ Status: "Success" });
   });
 });
 
-app.post("/api/insert", (req, res) => {
-  const devilfruit = req.body.devilfruit;
-  const type = req.body.type;
-  const power = req.body.power;
-  const ability = req.body.ability;
-  const user = req.body.user;
-  const info = req.body.info;
-
-  const sqlInsert =
-    "INSERT INTO fruits (devilfruit, type, power, ability, user, info) VALUES (?,?,?,?,?,?)";
-  db.query(
-    sqlInsert,
-    [devilfruit, type, power, ability, user, info],
-    (err, result) => {
-      if (err) {
-        console.log(err);
-        res.status(500).send("Error while inserting data");
-      } else {
-        console.log("Data inserted successfully");
-        res.status(200).send("Data inserted successfully");
-      }
-    }
-  );
-});
-
-app.listen(3001, () => {
-  console.log("Server is running on port 3001");
+app.listen(8081, () => {
+  console.log("Server is running on port 8081");
 });
